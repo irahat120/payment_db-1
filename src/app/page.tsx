@@ -6,9 +6,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow-sm py-4">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Online Payment System
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800">Online Payment</h1>
           <Link
             href="/add-product"
             className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
