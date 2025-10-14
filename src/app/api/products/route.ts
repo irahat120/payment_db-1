@@ -5,13 +5,24 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
+    const productId = searchParams.get("productId");
 
-    const whereClause = category ? { category } : {};
-
-    const products = await prisma.product.findMany({
-      where: whereClause,
-      orderBy: { createdAt: "desc" },
-    });
+    let products;
+    
+    if (productId) {
+      // Fetch a single product by ID
+      products = await prisma.product.findMany({
+        where: { id: parseInt(productId) },
+        orderBy: { createdAt: "desc" },
+      });
+    } else {
+      // Fetch products by category or all products
+      const whereClause = category ? { category } : {};
+      products = await prisma.product.findMany({
+        where: whereClause,
+        orderBy: { createdAt: "desc" },
+      });
+    }
 
     return NextResponse.json(products);
   } catch (error) {
