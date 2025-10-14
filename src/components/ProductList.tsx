@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useCart } from "@/context/CartContext";
 
 interface Product {
   id: number;
@@ -19,6 +20,7 @@ const ProductList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { dispatch } = useCart();
 
   // Fetch products from the API
   const fetchProducts = async (category?: string) => {
@@ -61,6 +63,17 @@ const ProductList: React.FC = () => {
   const filteredProducts = selectedCategory
     ? products.filter((product) => product.category === selectedCategory)
     : products;
+
+  // Handle Add to Cart action
+  const handleAddToCart = (product: Product) => {
+    dispatch({ type: "ADD_ITEM", payload: product });
+  };
+
+  // Handle Buy Now action (add to cart with quantity 1, then go to checkout)
+  const handleBuyNow = (product: Product) => {
+    dispatch({ type: "ADD_ITEM", payload: product });
+    window.location.href = `/checkout`;
+  };
 
   if (loading) {
     return (
@@ -151,13 +164,24 @@ const ProductList: React.FC = () => {
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                   {product.description}
                 </p>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mt-4">
                   <span className="text-lg font-bold text-gray-900">
                     ${product.price.toFixed(2)}
                   </span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm">
-                    Add to Cart
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm"
+                    >
+                      Add to Cart
+                    </button>
+                    <button
+                      onClick={() => handleBuyNow(product)}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
